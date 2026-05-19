@@ -12,3 +12,12 @@ hpc_lib <- "/mnt/vast-standard/home/brachem1/u18549/micromamba/envs/r-4.5/lib/R/
 if (dir.exists(hpc_lib)) {
   .libPaths(c(hpc_lib, .libPaths()))
 }
+
+venv_python <- file.path(getwd(), ".venv", "bin", "python")
+if (file.exists(venv_python)) {
+  # The .venv is fully built! Lock R onto it so we get pandas.
+  Sys.setenv(RETICULATE_PYTHON = venv_python)
+} else {
+  Sys.setenv(RETICULATE_PYTHON = "~/.pyenv/versions/3.13.0/bin/python3")
+}
+

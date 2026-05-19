@@ -52,6 +52,59 @@ renv::restore()
 This will install the R packages listed in `renv.lock` and the Python packages listed
 in `requirements.txt`.
 
+For the example code to run at least R 4.5.1 and Python 3.13 are required. If you want to have multiple R versions on the same device I would recommend using a tool like ['rig'](https://github.com/r-lib/rig). If the system python version doesnt match the version specified in the renv.lock file, you have two options: 
+A. Use Pyenv (Recommended)
+1. Install Pyenv from ['pyenv'](https://github.com/pyenv/pyenv)
+2. Run 
+```shell
+pyenv global 3.11.5
+```
+in your terminal after succesfull installation.
+3. Add 
+'''r
+venv_python <- file.path(getwd(), ".venv", "bin", "python")
+if (file.exists(venv_python)) {
+  # The .venv is fully built! Lock R onto it so we get pandas.
+  Sys.setenv(RETICULATE_PYTHON = venv_python)
+} else {
+  Sys.setenv(RETICULATE_PYTHON = "~/.pyenv/versions/3.13.0/bin/python3")
+}
+``` to the `.Rprofile`.
+4. Finally, run:
+
+```shell
+R
+```
+and
+
+```r
+renv::restore()
+```
+
+B. Use a `.Renviron` file.
+1. Create a python environment with 
+```shell
+python3.13 -m venv .venv
+```
+2. Run  
+```shell
+echo 'RENV_PYTHON=".venv/bin/python"' > .Renviron
+echo 'RETICULATE_PYTHON=".venv/bin/python"' >> .Renviron
+```
+to create a `.Renviron` file. Make sure the path points to your created enviroment. 
+
+3. 
+Then run:
+```shell
+R
+```
+and
+
+```r
+renv::restore()
+```
+
+
 ### Activate virtual environment
 
 After the environments are prepared, activate the Python environment:
