@@ -92,6 +92,13 @@ If you are working in VS Code or Positron, you can add the following settings to
     "code-runner.runInTerminal": true,
 }
 ```
+You potentially have to create that file by running: 
+```bash 
+mkdir .vscode 
+cd .vscode 
+touch settings.json 
+```
+
 
 If you work with a different IDE, you need to figure out how to make these environment
 variables yourself. This guide assumes use of VS Code or Positron.
@@ -321,6 +328,39 @@ R packages listed in `renv.lock` and the Python packages listed in `requirements
 ```r
 HPC (R)> renv::restore()
 ```
+Again `renv` might defualt to the system python version. Therefore it might be necessary to to install Python 3.13.
+
+```bash 
+HPC> micromamba install -c conda-forge python=3.13 pip ipykernel
+```
+Here we can afterwards just link our preferred Python version in the `.Rprofile` file, the same way we did it in the `README.md`.
+
+Get the path: 
+
+```bash
+which python 
+```
+Add it to `.Rprofile`:
+
+```r
+venv_python <- file.path(getwd(), ".venv", "bin", "python")
+if (file.exists(venv_python)) {
+  Sys.setenv(RETICULATE_PYTHON = venv_python)
+} else {
+  Sys.setenv(RETICULATE_PYTHON = "<path_to_python_version>")
+}
+
+```
+Now you can run: 
+
+```shell
+HPC> (r-4.5) R
+```
+and
+
+```r
+HPC (R)> renv::restore()
+```
 
 I sometimes encounter installation problems for individual R packages in this step. 
 Often they can be solved quickly when copy-pasting the error messages to an LLM.
@@ -380,7 +420,7 @@ Logs will be available in
 To finalize the setup, we also need to configure one environment variable on the HPC:
 
 For this, edit the content of the `.dotenv` file in your home directory. This works
-a little different from the `.env` file we are using locally, but it is not a big deal.
+a little different from the `.env` file we are using locally, but it is not a big deal. You might need to create this file.
 
 ```shell
 # content of ~/.dotenv
