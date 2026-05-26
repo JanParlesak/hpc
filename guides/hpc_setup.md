@@ -356,6 +356,8 @@ Now you can run:
 ```shell
 HPC> (r-4.5) R
 ```
+(make sure the old enviroment is deleted)
+
 and
 
 ```r
